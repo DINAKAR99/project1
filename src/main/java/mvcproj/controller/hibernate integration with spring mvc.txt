@@ -1,0 +1,109 @@
+-----------ToDoApp.xml----------
+<dependencies>
+<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
+<dependency>
+    <groupId>org.hibernate</groupId>
+    <artifactId>hibernate-core</artifactId>
+    <version>5.4.5.Final</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-orm -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-orm</artifactId>
+    <version>4.3.13.RELEASE</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>5.1.48</version>
+</dependency>
+
+</dependencies>
+--------------todo-servlet.xml----
+//make diverManger data source
+<bean
+class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+name="dataSource">
+<property name="driverClassName"
+value="com.mysql.jbdc.Driver"/>
+<property name="url"
+value ="jbc:mysql://localhost:3306/todomanger"/>
+<property nmae="username" value="root"/>
+<property name="password" value="root"/>
+</bean>
+//make session factory
+//make local session factory
+//make MySQL57Dialect
+<bean
+class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
+name="seesionFactory">
+<property name="dataSource" ref="dataSource"/>
+<property name="hibernateProperties">
+<props>
+<prop kwy="hibernate.dialect">org.hibernate.dialect.MySQL57Dialect</prop>
+<prop key="hibernate.hbm2ddl.auto">true</prop>
+<prop key="hibernate.show_sql">true</prop>
+</props>
+</property>
+
+<property name="annotatedCLasses".
+<list>
+<value>
+com.entites.Todo
+</value>
+</list>
+</property>
+</bean>
+//make hibernate template
+<bean class="org.springframework.orm.hibernate5.HibernateTemplate"
+name="hibernateTemplate"
+<property name="sessionFactory" ref="sessionFactory"></property>
+</bean>
+//make hibernate transaction manager
+<bean
+class="org.springframework.orm.hibernate5.HibernateTransactionManager
+name="transactionManager">
+<property name="sessionFactory" ref="sessionFactory"></property>
+</bean>
+-----------------com.doa--------
+import org.springframework.orm.hibernate5.HibernateTemplate
+import com.entities.Todo;
+@Component
+public class TodoDao{
+@Autowired
+HibernateTemplate hibernateTemplate;
+@Transactional
+public int save(Todo t){
+Integer i=(Integer)this.hibernateTemplate,save(t);
+return i;
+}
+public list<Todo>getAll(){
+List<Todo>todos=this.hibernateTemplate.loadAll(Todo.class);
+return todos;
+}
+}
+-------Todo.java----------
+@Entity
+publi class Todo{
+@Id
+@GeneratedValue(stratergy=GenerationType.IDENTITY)
+private int =todoId;
+private String todoTitle;
+private String todoCntent;
+private Date todoDate;
+-----------HomeCtrl.java--------
+@Autowired
+TodoDao todoDao;
+//under value="/saveTodo"
+this.todo.save(t);
+//under "/home"
+List<Todo> list=this.todoDao.getAll();
+-------------Todo-servlet--------
+xmlns:tx="http://www.springframework.org/schema/tx"
+http://www.springframework.org/schema/tx
+http://www.springframework.org/schema/tx/spring-tx.xsd
+<tx:annotation-driven/>
+<context:component-scan base-package="com"></context:component-scan>
+-----------todoservlet.xml-------
+<prop key="hibernate.hbm2ddl.auto">update</prop>
